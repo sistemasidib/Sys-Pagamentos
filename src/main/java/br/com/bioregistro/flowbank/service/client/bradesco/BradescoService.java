@@ -43,12 +43,7 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse> {
     @Override
     public BoletoBradescoResponse processOperationPIX(Inscricao inscricao, TypeOperation operation, HttpServerRequest serverRequest) throws URISyntaxException {
 
-        switch (operation) {
-            case TypeOperation.PIX -> {
-                return gerarLancamentoPix(inscricao, serverRequest);
-            }
-            default -> throw new RuntimeException("Erro ao identificar Fornecedor");
-        }
+        return gerarLancamentoPix(inscricao, serverRequest);
 
     }
 
