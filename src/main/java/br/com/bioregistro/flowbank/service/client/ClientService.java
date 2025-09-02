@@ -33,7 +33,7 @@ public class ClientService {
 
         return clientStrategyFactory
                 .getStrategy(clientResquestPIX)
-                .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest,  form -> pixService.createPix((PixForm) form)); // dps mudar para o mapper
+                .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest, pixService::createPix);
     };
 
 }

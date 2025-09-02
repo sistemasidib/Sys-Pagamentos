@@ -1,9 +1,11 @@
 package br.com.bioregistro.flowbank.service.client.strategy;
 
 import br.com.bioregistro.flowbank.model.ClientResquestPIX;
+import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.model.enuns.TypeClient;
 import br.com.bioregistro.flowbank.service.client.bradesco.BradescoService;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank;
+import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBankResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class ClientStrategyFactory {
         strategies.put(TypeClient.BRADESCO, bradesco);
     }
 
-    public ClientBank getStrategy(ClientResquestPIX resquest) {
+    public ClientBank<ClientBankResponse, PixForm, Integer> getStrategy(ClientResquestPIX resquest) {
         return strategies.get(resquest.client());
     }
 

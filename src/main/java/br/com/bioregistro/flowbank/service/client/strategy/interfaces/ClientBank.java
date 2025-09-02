@@ -8,12 +8,12 @@ import io.vertx.core.http.HttpServerRequest;
 import java.net.URISyntaxException;
 import java.util.function.Function;
 
-public interface ClientBank<T  extends ClientBankResponse> {
+public interface ClientBank<T  extends ClientBankResponse, P , R> {
 
     T processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest) throws URISyntaxException;
 
-    T processOperationBoleto(Long inscricao, TypeOperation operation);
+    T processOperationBoleto(Integer inscricao, TypeOperation operation);
 
-    T processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<PixForm, Long> mapper) throws URISyntaxException;
+    T processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<P, R> mapper) throws URISyntaxException;
 
 }

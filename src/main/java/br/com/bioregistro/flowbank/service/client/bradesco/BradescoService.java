@@ -24,7 +24,7 @@ import java.util.function.Function;
 import static br.com.bioregistro.flowbank.Base64Util.generate;
 
 @ApplicationScoped
-public class BradescoService implements ClientBank<BoletoBradescoResponse> {
+public class BradescoService implements ClientBank<BoletoBradescoResponse, PixForm, Integer> {
 
     private final PixService pixService;
 
@@ -58,12 +58,12 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse> {
     }
 
     @Override
-    public BoletoBradescoResponse processOperationBoleto(Long inscricao, TypeOperation operation) {
+    public BoletoBradescoResponse processOperationBoleto(Integer inscricao, TypeOperation operation) {
         return null;
     }
 
     @Override
-    public BoletoBradescoResponse processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<PixForm, Long> mapper) throws URISyntaxException {
+    public BoletoBradescoResponse processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<PixForm, Integer> mapper) throws URISyntaxException {
 
         BoletoBradescoResponse b = new BoletoBradescoResponse();
         b = gerarLancamentoPix(candidato, serverRequest);
