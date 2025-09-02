@@ -2,6 +2,7 @@ package br.com.bioregistro.flowbank.form.Boleto.Bradesco;
 
 
 
+import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBankResponse;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.*;
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @RegisterForReflection
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class BoletoBradescoResponse {
+public class BoletoBradescoResponse implements ClientBankResponse {
 
     private String merchantId;
     private String meioPagamento;

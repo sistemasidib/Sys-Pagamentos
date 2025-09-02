@@ -31,7 +31,7 @@ public class BoletoBradescoRequest {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Pedido {
         private String numero;
-        private BigDecimal valor; // precisão de moeda
+        private Long valor; // precisão de moeda
         private String descricao;
         private Integer expiracao;
         private Integer formato;
