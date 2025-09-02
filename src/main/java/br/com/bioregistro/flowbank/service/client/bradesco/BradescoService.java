@@ -3,7 +3,9 @@ package br.com.bioregistro.flowbank.service.client.bradesco;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoRequest;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
+import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.model.enuns.TypeOperation;
+import br.com.bioregistro.flowbank.service.PixService;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank;
 import io.vertx.core.http.HttpServerRequest;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -17,11 +19,21 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static br.com.bioregistro.flowbank.Base64Util.generate;
 
 @ApplicationScoped
 public class BradescoService implements ClientBank<BoletoBradescoResponse> {
+
+    private final PixService pixService;
+
+
+    public BradescoService(PixService pixService, @RestClient BradescoClient client) {
+        this.pixService = pixService;
+        this.client = client;
+    }
+
 
     @RestClient
     private BradescoClient client;
@@ -32,9 +44,7 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse> {
     @ConfigProperty(name = "quarkus.rest-client.bradesco-api.url")
     String url;
 
-    public BradescoService(@RestClient BradescoClient client) {
-        this.client = client;
-    }
+
 
     public BoletoBradescoResponse criar(BoletoBradescoRequest request) {
         return client.criarBoleto(request);
@@ -51,6 +61,23 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse> {
     public BoletoBradescoResponse processOperationBoleto(Long inscricao, TypeOperation operation) {
         return null;
     }
+
+    @Override
+    public BoletoBradescoResponse processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<PixForm, Long> mapper) throws URISyntaxException {
+
+        BoletoBradescoResponse b = new BoletoBradescoResponse();
+        b = gerarLancamentoPix(candidato, serverRequest);
+
+        PixForm pixForm = new PixForm(b, candidato.insId, operation);
+
+
+
+        mapper.apply(pixForm);
+
+
+        return b;
+    }
+
 
     public BoletoBradescoResponse gerarLancamentoPix(Inscricao inscricao, HttpServerRequest serverRequest) throws URISyntaxException {
 

@@ -25,7 +25,7 @@ public class BoletoBradescoResponse implements ClientBankResponse {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Pedido {
         private String numero;
-        private BigDecimal valor;
+        private Integer valor;
         private String descricao;
     }
 

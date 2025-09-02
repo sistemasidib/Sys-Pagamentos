@@ -2,6 +2,8 @@ package br.com.bioregistro.flowbank.service.client;
 
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.model.ClientResquestPIX;
+import br.com.bioregistro.flowbank.model.PixForm;
+import br.com.bioregistro.flowbank.service.PixService;
 import br.com.bioregistro.flowbank.service.client.strategy.ClientStrategyFactory;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBankResponse;
 import io.vertx.core.http.HttpServerRequest;
@@ -15,9 +17,11 @@ import java.util.Optional;
 public class ClientService {
 
     private final ClientStrategyFactory clientStrategyFactory;
+    private final PixService pixService;
 
-    public ClientService(ClientStrategyFactory clientStrategyFactory) {
+    public ClientService(ClientStrategyFactory clientStrategyFactory,PixService pixService) {
         this.clientStrategyFactory = clientStrategyFactory;
+        this.pixService = pixService;
     }
 
     public ClientBankResponse gerarLancamentoPrevistoPix(ClientResquestPIX clientResquestPIX, HttpServerRequest serverRequest) throws URISyntaxException {
@@ -29,7 +33,7 @@ public class ClientService {
 
         return clientStrategyFactory
                 .getStrategy(clientResquestPIX)
-                .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest);
+                .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest,  form -> pixService.createPix((PixForm) form)); // dps mudar para o mapper
     };
 
 }

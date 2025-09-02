@@ -23,4 +23,7 @@ public class ClientResource {
         return service.gerarLancamentoPrevistoPix(request, serverRequest);
     }
 
+
+
+
 }
