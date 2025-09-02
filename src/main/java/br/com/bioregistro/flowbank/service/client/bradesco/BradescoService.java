@@ -70,8 +70,6 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse> {
 
         PixForm pixForm = new PixForm(b, candidato.insId, operation);
 
-
-
         mapper.apply(pixForm);
 
 

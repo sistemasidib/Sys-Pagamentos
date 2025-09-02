@@ -16,6 +16,7 @@ public class PixService {
         pix.numero = pixForm.pedido().getNumero();
         pix.descricao = pixForm.pedido().getDescricao();
         pix.dataRegistro = pixForm.dataCriacao();
+        pix.inscricao = pixForm.inscricao();
         pix.persist();
         return pix.Id;
     }
