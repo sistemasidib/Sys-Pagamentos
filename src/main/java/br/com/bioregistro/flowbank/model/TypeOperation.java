@@ -1,8 +1,9 @@
-package br.com.bioregistro.flowbank.model.enuns;
+package br.com.bioregistro.flowbank.model;
 
 public enum TypeOperation {
 
     PIX,
-    BOLETO;
+    BOLETO,
+    BAIXA
 
 }

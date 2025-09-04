@@ -31,9 +31,13 @@ public class ClientService {
                 .orElseThrow(() -> new RuntimeException("Erro ao buscar Inscricao"));
 
 
-        return clientStrategyFactory
-                .getStrategy(clientResquestPIX)
-                .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest, pixService::createPix);
+        return clientStrategyFactory.executePixOp(clientResquestPIX,cand, clientResquestPIX.operation(), serverRequest, teste -> pixService.createPix(teste));
     };
+
+    public void aplicarBaixaPagamentoBoleto() {
+        br.com.bioregistro.flowbank.model.enuns.TypeClient.values().forEach(typeClient -> {
+            clientStrategyFactory.getStrategy(typeClient).aplicarBaixaPagamentoBoleto();
+        });
+    }
 
 }

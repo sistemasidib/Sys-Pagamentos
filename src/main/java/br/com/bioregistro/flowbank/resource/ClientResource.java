@@ -23,7 +23,14 @@ public class ClientResource {
         return service.gerarLancamentoPrevistoPix(request, serverRequest);
     }
 
+    @POST
+    @Path("payment/baixa")
+    public ClientBankResponse processBaixaPayment(ClientResquestPIX request, @Context HttpServerRequest serverRequest) throws URISyntaxException {
 
+        return service.
+
+                gerarLancamentoPrevistoPix(request, serverRequest);
+    }
 
 
 }
