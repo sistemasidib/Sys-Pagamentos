@@ -1,7 +1,6 @@
 package br.com.bioregistro.flowbank.service;
 
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Pix;
-import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
 import br.com.bioregistro.flowbank.model.PixForm;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
