@@ -9,7 +9,7 @@ ARG BIO_REGISTRO_VERSION=1.1.5
 
 ENV CODEARTIFACT_TOKEN=${CODEARTIFACT_TOKEN}
 ENV BIO_REGISTRO_VERSION=${BIO_REGISTRO_VERSION}
-COPY .github/maven-settings/settings-template.xml /root/.m2/settings.xml
+COPY /.github/maven-settings/settings-template.xml /root/.m2/settings.xml
 
 RUN echo "PROFILE:"
 RUN echo $PROFILE
