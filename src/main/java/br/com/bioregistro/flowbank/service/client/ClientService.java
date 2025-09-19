@@ -9,7 +9,7 @@ import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Context;
-
+import br.com.bioregistro.flowbank.model.*;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
@@ -35,5 +35,13 @@ public class ClientService {
                 .getStrategy(clientResquestPIX)
                 .processOperationPIX(cand, clientResquestPIX.operation(), serverRequest, pixService::createPix);
     };
+
+    public void criarNovoProdutoClient(Long produtoId) {
+
+    }
+
+    public void criarOrdemDePagamentoCartaoSplit(Long clientId, Long produtoId, TypeClient type) {
+        clientStrategyFactory.getStrategy(type).gerarOrdemDepagamentoCartaoSplit(clientId, produtoId);
+    }
 
 }

@@ -76,6 +76,16 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
         return b;
     }
 
+    @Override
+    public void criarProduto(Long produtoId, Function<PixForm, Integer> mapper) {
+
+    }
+
+    @Override
+    public BoletoBradescoResponse gerarOrdemDepagamentoCartaoSplit(Long clientId, Function<PixForm, Integer> mapper) {
+        return null;
+    }
+
 
     public BoletoBradescoResponse gerarLancamentoPix(Inscricao inscricao, HttpServerRequest serverRequest) throws URISyntaxException {
 
