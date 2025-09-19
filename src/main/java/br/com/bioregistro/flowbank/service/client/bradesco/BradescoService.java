@@ -4,7 +4,7 @@ import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoRequest;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
 import br.com.bioregistro.flowbank.model.PixForm;
-import br.com.bioregistro.flowbank.model.enuns.TypeOperation;
+import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.PixService;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank;
 import io.vertx.core.http.HttpServerRequest;
@@ -82,7 +82,7 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
     }
 
     @Override
-    public BoletoBradescoResponse gerarOrdemDepagamentoCartaoSplit(Long clientId, Function<PixForm, Integer> mapper) {
+    public BoletoBradescoResponse gerarOrdemDepagamentoCartaoSplit(Long clientId, Long produtoId) {
         return null;
     }
 

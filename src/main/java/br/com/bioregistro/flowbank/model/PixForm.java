@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public record PixForm(
-       br.com.bioregistro.flowbank.model.enuns.TypeOperation operation,
+       TypeOperation operation,
        BoletoBradescoResponse.Pedido pedido,
        Integer inscricao,
        LocalDateTime dataCriacao
 
 ) {
-    public PixForm (BoletoBradescoResponse response,Integer inscricao,br.com.bioregistro.flowbank.model.enuns.TypeOperation operation){
+    public PixForm (BoletoBradescoResponse response,Integer inscricao, TypeOperation operation){
         this(operation,response.getPedido(),inscricao,LocalDateTime.now());
     }
 }
