@@ -47,7 +47,6 @@
         }
     ],
     "cpu": "1024",
-    "enableFaultInjection": false,
     "executionRoleArn": "arn:aws:iam::009160066749:role/ecsTaskExecutionRole",
     "family": "task-bioregistro-payment-idecan-new",
     "memory": "3072",
