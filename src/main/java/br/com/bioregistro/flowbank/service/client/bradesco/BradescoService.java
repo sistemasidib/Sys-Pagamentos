@@ -6,6 +6,7 @@ import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
 import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.PixService;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.response.ProductResp;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank;
 import io.vertx.core.http.HttpServerRequest;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -76,14 +77,11 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
         return b;
     }
 
-    @Override
-    public void criarProduto(Long produtoId, Function<PixForm, Integer> mapper) {
 
-    }
 
     @Override
-    public BoletoBradescoResponse gerarOrdemDepagamentoCartaoSplit(Long clientId, Long produtoId) {
-        return null;
+    public String gerarOrdemDepagamentoCartaoSplit(Long clientId,  Long companyId) {
+        return "";
     }
 
 

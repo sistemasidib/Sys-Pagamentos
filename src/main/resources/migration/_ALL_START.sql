@@ -70,3 +70,14 @@ CREATE TABLE payment.payment_transaction_split (
 );
 END
 GO
+
+CREATE TABLE payment.produto_externo (
+                                         id BIGINT IDENTITY(1,1) PRIMARY KEY,
+                                         external_produto_id NVARCHAR(150) NOT NULL, -- id do produto no sistema externo
+                                         client_id_reference NVARCHAR(150) NOT NULL, -- referência ao produto interno / sistema
+                                         created_at DATETIME2 DEFAULT SYSDATETIME(),
+                                         company_id BIGINT NOT NULL,
+
+                                         CONSTRAINT fk_produto_company FOREIGN KEY (company_id)
+                                             REFERENCES payment.payment_company (company_id)
+);
