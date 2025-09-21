@@ -40,7 +40,7 @@ CREATE TABLE payment.produto_externo (
                                          client_id_reference NVARCHAR(150) NOT NULL, -- referência ao produto interno / sistema
                                          created_at DATETIME2 DEFAULT SYSDATETIME(),
                                          company_id BIGINT NOT NULL,
-
+                                         amount DECIMAL(15,5) NOT NULL,
                                          CONSTRAINT fk_produto_company FOREIGN KEY (company_id)
                                              REFERENCES payment.payment_company (company_id)
 );
@@ -52,7 +52,6 @@ CREATE TABLE payment.payment_transaction (
                                              provider_id BIGINT NOT NULL,
                                              external_id NVARCHAR(100) NOT NULL, -- ID do provedor
                                              product_id BIGINT NOT NULL,          -- FK para produto
-                                             company_id BIGINT NOT NULL,          -- FK para empresa que abriu a transação
                                              amount DECIMAL(15,5) NOT NULL,
                                              currency NVARCHAR(10) NOT NULL DEFAULT 'BRL',
                                              payment_method NVARCHAR(20) NOT NULL, -- CARD, BOLETO, PIX
@@ -64,8 +63,6 @@ CREATE TABLE payment.payment_transaction (
                                                  REFERENCES payment.payment_provider (provider_id),
                                              CONSTRAINT fk_product FOREIGN KEY (product_id)
                                                  REFERENCES payment.produto_externo (id),
-                                             CONSTRAINT fk_company FOREIGN KEY (company_id)
-                                                 REFERENCES payment.payment_company (company_id)
 );
 END
 GO

@@ -33,6 +33,7 @@ public record ProductResp(
         entity.createdAt = createdAt.toLocalDateTime();
         entity.clientIdReference = clientProduct;
         entity.company = company;
+        entity.amount = price;
         return entity;
     }
 

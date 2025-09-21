@@ -70,7 +70,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Override
-    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias, PaymentTransaction transaction) {
+    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias) {
 
         Inscricao inscricao = Inscricao.findById(clientId);
 
@@ -80,13 +80,6 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
         ProdutoExterno prod = save(cargo, alias);
 
         RedirectURLResp url = checkoutClient.gerarOrdemPagamentoURI(prod.externalProdutoId);
-
-        transaction.externalId = UUID.randomUUID().toString();
-        transaction.product = prod;
-        transaction.company = prod.company;
-        transaction.currency = "BRL";
-        transaction.amount = cargo.carVlInscricao;
-        transaction.provider = PaymentProvider.findById(1);
 
         String clientCode = checkoutClient.gerarCodigoClienteEncrypt(new PessoaReq(
                 candidato.canNome,candidato.canCPF,candidato.canTelefone1,candidato.canEmail

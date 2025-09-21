@@ -81,7 +81,7 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
 
 
     @Override
-    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String companyId, PaymentTransaction transaction) {
+    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String companyId) {
         return "";
     }
 

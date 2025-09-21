@@ -1,6 +1,8 @@
 package br.com.bioregistro.flowbank.service.client;
 
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentProvider;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.ProdutoExterno;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.enuns.PaymentTransactionType;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.model.ClientResquestPIX;
@@ -19,6 +21,7 @@ import br.com.bioregistro.flowbank.model.*;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @ApplicationScoped
 public class ClientService {
@@ -48,13 +51,7 @@ public class ClientService {
 
     public ClientResponse criarOrdemDePagamentoCartaoSplit(String clientId, TypeClient type, String alias) {
 
-        PaymentTransaction paymentTransaction = new PaymentTransaction();
-        String urlResponse = clientStrategyFactory.getStrategy(type).gerarOrdemDepagamentoCartaoSplit(clientId, alias, paymentTransaction);
-
-
-        paymentTransaction.paymentMethod = PaymentTransactionType.CARTAO.toString();
-        paymentTransaction.clientReferenceId = clientId;
-        pesistPayment(paymentTransaction);
+        String urlResponse = clientStrategyFactory.getStrategy(type).gerarOrdemDepagamentoCartaoSplit(clientId, alias);
 
         return new ClientResponse(urlResponse);
     }
@@ -66,16 +63,28 @@ public class ClientService {
 
     @Transactional
     public void callbackCardSplit(CallbackResponse response) {
-        Optional<PaymentTransaction> transaction = PaymentTransaction.find("external_id = ?1", response.transactionId()).firstResultOptional();
+        PaymentTransaction transaction = new PaymentTransaction();
 
-        transaction.ifPresentOrElse(
+        Optional<ProdutoExterno> prod = ProdutoExterno.find("external_id = ?1", response.productId()).firstResultOptional();
+
+        prod.ifPresentOrElse(
                 it -> {
-                    it.status = response.status();
-                    it.persist();
+                    transaction.externalId = response.transactionId();
+                    transaction.product = it;
+                    transaction.currency = response.currency();
+                    transaction.amount = response.amount();
+                    transaction.provider = PaymentProvider.findById(1);
+                    transaction.status = response.paymentMethod();
+                    transaction.paymentMethod = response.paymentMethod();
+                    transaction.clientReferenceId = response.customerDocument();
+                    transaction.persist();
                 },
                 () -> {
-                    throw new RuntimeException("Erro ao buscar Transação");
+                    throw new RuntimeException("Erro ao buscar produto");
                 });
+
+
+
     }
 
 }

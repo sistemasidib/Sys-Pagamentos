@@ -18,6 +18,6 @@ public interface ClientBank<T  extends ClientBankResponse, P , R> {
 
     T processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<P, R> mapper) throws URISyntaxException;
 
-    String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias, PaymentTransaction transaction);
+    String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias);
 
 }
