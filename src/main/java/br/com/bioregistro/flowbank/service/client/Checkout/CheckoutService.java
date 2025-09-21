@@ -86,7 +86,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
         return prodct.orElseGet(() -> {
 
             ProductResp resp = checkoutClient.criarProduto(
-                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao, BigDecimal.valueOf(30), TaxType.FIXED.getDescription())
+                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao, BigDecimal.valueOf(1), TaxType.FIXED.getDescription())
             );
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
