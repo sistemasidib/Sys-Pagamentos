@@ -16,17 +16,4 @@ public record PaymentForm(
 
 ) {
 
-    public PaymentTransaction toPaymentTransaction() {
-        PaymentTransaction paymentTransaction = new PaymentTransaction();
-
-        paymentTransaction.amount = amount;
-        paymentTransaction.currency = currency;
-        paymentTransaction.status = status;
-        paymentTransaction.externalId = externalId;
-        paymentTransaction.paymentMethod = method;
-        paymentTransaction.provider = provider;
-
-        return paymentTransaction;
-    }
-
 }

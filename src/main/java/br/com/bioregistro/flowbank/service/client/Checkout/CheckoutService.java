@@ -1,6 +1,9 @@
 package br.com.bioregistro.flowbank.service.client.Checkout;
 
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentCompany;
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentProvider;
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.ProdutoExterno;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Candidato;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Cargo;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Edital;
@@ -21,6 +24,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 @ApplicationScoped
@@ -65,17 +70,23 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Override
-    public String gerarOrdemDepagamentoCartaoSplit(Long clientId, Long companyId) {
+    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias, PaymentTransaction transaction) {
 
         Inscricao inscricao = Inscricao.findById(clientId);
-        System.out.println(PaymentCompany.findAll().count() + " Teste");
-        PaymentCompany company = PaymentCompany.findById(1);
+
         Cargo cargo = inscricao.localidade.cargo;
         Candidato candidato = inscricao.candidato;
 
-        String prodId = save(company, cargo, companyId);
+        ProdutoExterno prod = save(cargo, alias);
 
-        RedirectURLResp url = checkoutClient.gerarOrdemPagamentoURI(prodId);
+        RedirectURLResp url = checkoutClient.gerarOrdemPagamentoURI(prod.externalProdutoId);
+
+        transaction.externalId = UUID.randomUUID().toString();
+        transaction.product = prod;
+        transaction.company = prod.company;
+        transaction.currency = "BRL";
+        transaction.amount = cargo.carVlInscricao;
+        transaction.provider = PaymentProvider.findById(1);
 
         String clientCode = checkoutClient.gerarCodigoClienteEncrypt(new PessoaReq(
                 candidato.canNome,candidato.canCPF,candidato.canTelefone1,candidato.canEmail
@@ -85,20 +96,23 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Transactional
-    public String save(PaymentCompany company, Cargo cargo, Long companyId) {
-        String prodId = company.produtos.stream()
-                .filter(p -> p.clientIdReference.equals(cargo.carId.toString()))
-                .map(p -> p.externalProdutoId)
-                .findFirst()
-                .orElseGet(() -> {
-                    ProductResp resp = checkoutClient.criarProduto(
-                            new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao)
-                    );
+    public ProdutoExterno save(Cargo cargo, String alias) {
 
-                    resp.toEntity(company, cargo.carId.toString()).persist();
+        Optional<ProdutoExterno> prodct = ProdutoExterno.find("externalProdutoId = ?1 and company.alias = ?2", cargo.carId, alias).firstResultOptional();
 
-                    return resp.id().toString();
-                });
-        return prodId;
+        return prodct.orElseGet(() -> {
+
+            ProductResp resp = checkoutClient.criarProduto(
+                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao)
+            );
+
+            Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
+
+            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), cargo.carId.toString());
+
+            prod.persistAndFlush();
+
+            return prod;
+        });
     }
 }

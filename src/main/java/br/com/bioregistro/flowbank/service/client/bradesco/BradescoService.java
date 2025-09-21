@@ -1,5 +1,6 @@
 package br.com.bioregistro.flowbank.service.client.bradesco;
 
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoRequest;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
@@ -80,7 +81,7 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
 
 
     @Override
-    public String gerarOrdemDepagamentoCartaoSplit(Long clientId,  Long companyId) {
+    public String gerarOrdemDepagamentoCartaoSplit(String clientId, String companyId, PaymentTransaction transaction) {
         return "";
     }
 

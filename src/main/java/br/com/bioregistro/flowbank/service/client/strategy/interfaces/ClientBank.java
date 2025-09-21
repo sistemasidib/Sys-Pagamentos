@@ -1,5 +1,6 @@
 package br.com.bioregistro.flowbank.service.client.strategy.interfaces;
 
+import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.model.TypeOperation;
@@ -17,6 +18,6 @@ public interface ClientBank<T  extends ClientBankResponse, P , R> {
 
     T processOperationPIX(Inscricao candidato, TypeOperation operation, HttpServerRequest serverRequest, Function<P, R> mapper) throws URISyntaxException;
 
-    String gerarOrdemDepagamentoCartaoSplit(Long clientId, Long companyId);
+    String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias, PaymentTransaction transaction);
 
 }

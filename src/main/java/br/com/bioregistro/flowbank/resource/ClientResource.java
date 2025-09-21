@@ -1,6 +1,8 @@
 package br.com.bioregistro.flowbank.resource;
 
+import br.com.bioregistro.flowbank.model.ClientResponse;
 import br.com.bioregistro.flowbank.model.ClientResquestPIX;
+import br.com.bioregistro.flowbank.model.PaymentOrderForm;
 import br.com.bioregistro.flowbank.model.TypeClient;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.ProductResp;
 import br.com.bioregistro.flowbank.service.client.ClientService;
@@ -27,9 +29,11 @@ public class ClientResource {
     }
 
 
-    @GET
-    @Path("teste")
-    public String teste() {
-        return service.criarOrdemDePagamentoCartaoSplit(1L, TypeClient.CONJO,1l);
+    @POST
+    @Path("card/split")
+    public ClientResponse gerarOrdemPagamentoCartaoSplit(PaymentOrderForm form) {
+        return service.criarOrdemDePagamentoCartaoSplit(form.clientId(), TypeClient.CONJO,form.alias());
     }
+
+
 }
