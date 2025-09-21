@@ -9,6 +9,7 @@ import br.com.bio.registro.core.runtime.entities.idecan.dbo.Cargo;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Edital;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.model.TypeOperation;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.enuns.TaxType;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PessoaReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.ProductReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.CheckoutResponse;
@@ -36,18 +37,6 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
 
     public CheckoutService(@RestClient CheckoutClient checkoutClient) {
         this.checkoutClient = checkoutClient;
-    }
-
-    public void generateProduct(Long cargoId, Long editalId) {
-        Cargo  cargo = Cargo.findById(cargoId);
-        Edital edital = Edital.findById(editalId);
-
-        new ProductReq(
-                edital.ediNomeConcurso,
-                edital.ediEntidade,
-                cargo.carVlInscricao
-        );
-
     }
 
     public void generateOrder(Long insId, Long providerId) {
@@ -97,12 +86,12 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
         return prodct.orElseGet(() -> {
 
             ProductResp resp = checkoutClient.criarProduto(
-                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao)
+                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao, BigDecimal.valueOf(30), TaxType.FIXED.getDescription())
             );
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
 
-            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), cargo.carId.toString());
+            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), cargo.carId.toString(), cargo.carVlInscricao);
 
             prod.persistAndFlush();
 

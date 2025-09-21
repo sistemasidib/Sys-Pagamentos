@@ -28,13 +28,13 @@ public record ProductResp(
         OffsetDateTime updatedAt
 ) {
 
-    public ProdutoExterno toEntity(PaymentCompany company, String clientProduct) {
+    public ProdutoExterno toEntity(PaymentCompany company, String clientProduct, BigDecimal originalPrice) {
         ProdutoExterno entity = new ProdutoExterno();
         entity.externalProdutoId = id.toString();
         entity.createdAt = createdAt.toLocalDateTime();
         entity.clientIdReference = clientProduct;
         entity.company = company;
-        entity.amount = price;
+        entity.amount = originalPrice;
         entity.provider = PaymentProvider.findById(1);
         return entity;
     }
