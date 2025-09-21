@@ -65,7 +65,7 @@ public class ClientService {
     public void callbackCardSplit(CallbackResponse response) {
         PaymentTransaction transaction = new PaymentTransaction();
 
-        Optional<ProdutoExterno> prod = ProdutoExterno.find("external_id = ?1", response.productId()).firstResultOptional();
+        Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
         prod.ifPresentOrElse(
                 it -> {
@@ -81,8 +81,6 @@ public class ClientService {
                 () -> {
                     throw new RuntimeException("Erro ao buscar produto");
                 });
-
-
 
     }
 
