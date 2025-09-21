@@ -73,7 +73,6 @@ public class ClientService {
                     transaction.product = it;
                     transaction.currency = response.currency();
                     transaction.amount = response.amount();
-                    transaction.provider = PaymentProvider.findById(1);
                     transaction.status = response.paymentMethod();
                     transaction.paymentMethod = response.paymentMethod();
                     transaction.clientReferenceId = response.customerDocument();

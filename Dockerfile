@@ -5,7 +5,7 @@ ADD pom.xml .
 
 ARG PROFILE
 ARG CODEARTIFACT_TOKEN
-ARG BIO_REGISTRO_VERSION=1.1.8
+ARG BIO_REGISTRO_VERSION=1.2.1
 
 ENV BIO_REGISTRO_VERSION=${BIO_REGISTRO_VERSION}
 COPY /.github/maven-settings/settings-template.xml /root/.m2/settings.xml

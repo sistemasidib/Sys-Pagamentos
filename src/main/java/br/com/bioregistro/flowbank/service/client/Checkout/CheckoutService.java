@@ -75,6 +75,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
         Inscricao inscricao = Inscricao.findById(clientId);
 
         Cargo cargo = inscricao.localidade.cargo;
+
         Candidato candidato = inscricao.candidato;
 
         ProdutoExterno prod = save(cargo, alias);

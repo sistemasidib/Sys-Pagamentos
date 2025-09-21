@@ -41,15 +41,17 @@ CREATE TABLE payment.produto_externo (
                                          created_at DATETIME2 DEFAULT SYSDATETIME(),
                                          company_id BIGINT NOT NULL,
                                          amount DECIMAL(15,5) NOT NULL,
+                                         provider_id BIGINT NOT NULL,
                                          CONSTRAINT fk_produto_company FOREIGN KEY (company_id)
-                                             REFERENCES payment.payment_company (company_id)
+                                             REFERENCES payment.payment_company (company_id),
+                                         CONSTRAINT fk_provider FOREIGN KEY (provider_id)
+                                             REFERENCES payment.payment_provider (provider_id)
 );
 
 IF OBJECT_ID('payment.payment_transaction', 'U') IS NULL
 BEGIN
 CREATE TABLE payment.payment_transaction (
                                              transaction_id BIGINT IDENTITY(1,1) PRIMARY KEY,
-                                             provider_id BIGINT NOT NULL,
                                              external_id NVARCHAR(100) NOT NULL, -- ID do provedor
                                              product_id BIGINT NOT NULL,          -- FK para produto
                                              amount DECIMAL(15,5) NOT NULL,
@@ -58,11 +60,9 @@ CREATE TABLE payment.payment_transaction (
                                              status NVARCHAR(20) NOT NULL DEFAULT 'PENDING',
                                              created_at DATETIME2 NOT NULL DEFAULT GETDATE(),
                                              updated_at DATETIME2 NOT NULL DEFAULT GETDATE(),
-                                             client_reference_id NVARCHAR(100) NOT NULL
-                                             CONSTRAINT fk_provider FOREIGN KEY (provider_id)
-                                                 REFERENCES payment.payment_provider (provider_id),
+                                             client_reference_id NVARCHAR(100) NOT NULL,
                                              CONSTRAINT fk_product FOREIGN KEY (product_id)
-                                                 REFERENCES payment.produto_externo (id),
+                                                 REFERENCES payment.produto_externo (id)
 );
 END
 GO
