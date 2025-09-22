@@ -18,7 +18,7 @@ public record ProductReq(
                       BigDecimal taxValue,
                       String taxType
     ) {
-        this(name, description, price, taxValue, taxType ,"ATIVO", "clean");
+        this(name, description, price, taxValue, taxType ,"ATIVO", "dom");
     }
 
 }

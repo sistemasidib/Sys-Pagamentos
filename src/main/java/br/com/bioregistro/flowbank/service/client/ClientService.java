@@ -83,6 +83,7 @@ public class ClientService {
                     transaction.paymentMethod = response.paymentMethod();
                     transaction.clientReferenceId = response.customerDocument();
                     transaction.persist();
+
                 },
                 () -> {
                     throw new RuntimeException("Erro ao buscar produto");
