@@ -73,7 +73,7 @@ public class ClientService {
                     transaction.product = it;
                     transaction.currency = response.currency();
                     transaction.amount = response.amount();
-                    transaction.status = response.paymentMethod();
+                    transaction.status = response.status();
                     transaction.paymentMethod = response.paymentMethod();
                     transaction.clientReferenceId = response.customerDocument();
                     transaction.persist();
