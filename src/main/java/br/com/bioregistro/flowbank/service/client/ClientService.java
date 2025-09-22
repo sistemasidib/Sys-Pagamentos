@@ -69,11 +69,11 @@ public class ClientService {
         prod.ifPresentOrElse(
                 it -> {
 
-                    PaymentTransaction transaction = PaymentTransaction
-                            .find("externalId = ?1", response.transactionId())
-                            .project(PaymentTransaction.class)
-                            .firstResultOptional()
-                            .orElse(new PaymentTransaction());
+                    Optional<PaymentTransaction> transactionOpt =
+                            PaymentTransaction.find("externalId = ?1", response.transactionId())
+                                    .firstResultOptional();
+
+                    PaymentTransaction transaction = transactionOpt.orElse(new PaymentTransaction());
 
                     transaction.externalId = response.transactionId();
                     transaction.product = it;
