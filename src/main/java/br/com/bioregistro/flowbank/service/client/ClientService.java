@@ -63,12 +63,18 @@ public class ClientService {
 
     @Transactional
     public void callbackCardSplit(CallbackResponse response) {
-        PaymentTransaction transaction = new PaymentTransaction();
 
         Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
         prod.ifPresentOrElse(
                 it -> {
+
+                    PaymentTransaction transaction = PaymentTransaction
+                            .find("externalId = ?1", response.transactionId())
+                            .project(PaymentTransaction.class)
+                            .firstResultOptional()
+                            .orElse(new PaymentTransaction());
+
                     transaction.externalId = response.transactionId();
                     transaction.product = it;
                     transaction.currency = response.currency();
