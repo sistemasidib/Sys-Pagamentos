@@ -83,10 +83,13 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
 
         Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", cargo.carId, alias).firstResultOptional();
 
+
         return prodct.orElseGet(() -> {
             ProductResp resp = checkoutClient.criarProduto(
                     new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao, BigDecimal.valueOf(1), TaxType.FIXED.getDescription())
             );
+
+            System.out.println("estou entrando aqui e não paro");
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
 

@@ -41,7 +41,7 @@ public class ClientResource {
             PaymentOrderForm form,
             @HeaderParam("Authorization") String authHeader) {
 
-        if (authHeader == null || !authHeader.equals("Bearer " + apiKey)) {
+        if (authHeader == null || !authHeader.equals(apiKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).entity("API Key inválida").build();
         }
 
