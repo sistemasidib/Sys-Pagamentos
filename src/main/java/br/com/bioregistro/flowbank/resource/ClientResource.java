@@ -10,9 +10,12 @@ import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.URISyntaxException;
 
@@ -21,6 +24,9 @@ public class ClientResource {
 
     @Inject
     private ClientService service;
+
+    @ConfigProperty(name = "app.security.api-key")
+    String apiKey;
 
     @POST
     @Path("payment/pix")
@@ -31,8 +37,15 @@ public class ClientResource {
 
     @POST
     @Path("card/split")
-    public ClientResponse gerarOrdemPagamentoCartaoSplit(PaymentOrderForm form) {
-        return service.criarOrdemDePagamentoCartaoSplit(form.clientId(), TypeClient.CONJO,form.alias());
+    public Response gerarOrdemPagamentoCartaoSplit(
+            PaymentOrderForm form,
+            @HeaderParam("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.equals("Bearer " + apiKey)) {
+            return Response.status(Response.Status.UNAUTHORIZED).entity("API Key inválida").build();
+        }
+
+        return Response.ok(service.criarOrdemDePagamentoCartaoSplit(form.clientId(), TypeClient.CONJO,form.alias())).build();
     }
 
 
