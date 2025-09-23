@@ -69,6 +69,7 @@ public class ClientService {
         prod.ifPresentOrElse(
                 it -> {
                     System.out.println("estou entrando aqui e não paro");
+
                     Optional<PaymentTransaction> transactionOpt =
                             PaymentTransaction.find("externalId = ?1", response.transactionId())
                                     .firstResultOptional();
