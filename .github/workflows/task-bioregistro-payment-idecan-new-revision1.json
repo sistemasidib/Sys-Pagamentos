@@ -7,14 +7,6 @@
         {
             "cpu": 0,
             "environment": [
-                { "name": "DB_URL_IDECAN", "value": "database-prod.cpwgqy4ma0wo.us-east-1.rds.amazonaws.com" },
-                { "name": "DB_USERNAME_IDECAN", "value": "pagamentos_bio" },
-                { "name": "DB_PASSWORD_IDECAN", "value": "6zpc@^mD8Sq*" },
-                { "name": "DB_NAME_IDECAN", "value": "BIOREGISTRO" },
-                { "name": "DB_URL_PAYMENT", "value": "database-prod.cpwgqy4ma0wo.us-east-1.rds.amazonaws.com" },
-                { "name": "DB_USERNAME_PAYMENT", "value": "pagamentos_bio" },
-                { "name": "DB_PASSWORD_PAYMENT", "value": "6zpc@^mD8Sq*" },
-                { "name": "DB_NAME_PAYMENT", "value": "IDECAN_v2" }
             ],
             "environmentFiles": [],
             "essential": true,

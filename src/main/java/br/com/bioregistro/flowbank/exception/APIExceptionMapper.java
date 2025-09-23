@@ -14,7 +14,7 @@ public class APIExceptionMapper implements ExceptionMapper<Exception> {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(MsgRetorno.builder()
                         .success(false)
-                        .msg(e.getMessage())
+                        .msg("")
                         .build()).build();
     }
 
