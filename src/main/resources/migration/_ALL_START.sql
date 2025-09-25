@@ -67,6 +67,20 @@ CREATE TABLE payment.payment_transaction (
 END
 GO
 
+CREATE TABLE payment.api_event (
+                                   id INT IDENTITY(1,1) PRIMARY KEY,       -- Identificador único
+                                   endpoint NVARCHAR(255) NOT NULL,        -- URL ou endpoint acessado
+                                   http_method NVARCHAR(10) NOT NULL,       -- GET, POST, etc.
+                                   headers NVARCHAR(MAX) NULL,             -- Cabeçalhos da requisição em JSON
+                                   body NVARCHAR(MAX) NULL,                -- Corpo da requisição
+                                   client_ip NVARCHAR(50) NULL,             -- IP do cliente
+                                   received_at DATETIME2 DEFAULT SYSUTCDATETIME(),  -- Data/hora do recebimento
+                                   response_status INT NULL,                -- Status code da resposta, opcional
+                                   created_at DATETIME2 DEFAULT SYSUTCDATETIME()   -- Timestamp de criação do registro
+);
+
+
+
 INSERT INTO payment.payment_company (name, document, alias)
 VALUES ('Idecan', '04236076000171', 'IDC');
 
