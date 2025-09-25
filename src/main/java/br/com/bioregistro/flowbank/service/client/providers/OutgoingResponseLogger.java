@@ -24,6 +24,13 @@ public class OutgoingResponseLogger implements ContainerResponseFilter {
             if (eventId != null) {
                 ApiEvent event = ApiEvent.findById(eventId);
                 if (event != null) {
+                    String clientIp = requestContext.getHeaderString("X-Forwarded-For");
+                    if (clientIp != null && !clientIp.isBlank()) {
+                        clientIp = clientIp.split(",")[0].trim();
+                    } else {
+                        clientIp = "127.0.0.1"; // fallback
+                    }
+                    event.clientIp = clientIp;
                     event.responseStatus = responseContext.getStatus();
                     event.persist();
                 }
