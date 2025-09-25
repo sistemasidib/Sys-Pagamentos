@@ -16,8 +16,14 @@ import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Context;
 import br.com.bioregistro.flowbank.model.*;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.UriInfo;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
+
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -29,6 +35,11 @@ public class ClientService {
     private final ClientStrategyFactory clientStrategyFactory;
     private final PixService pixService;
     private final CheckoutService checkoutService;
+
+    @ConfigProperty(name = "app.security.api-ip")
+    private String ipKey;
+
+    private static final Logger log = Logger.getLogger(ClientService.class);
 
     public ClientService(ClientStrategyFactory clientStrategyFactory,PixService pixService, CheckoutService checkoutService) {
         this.clientStrategyFactory = clientStrategyFactory;
@@ -62,7 +73,11 @@ public class ClientService {
     }
 
     @Transactional
-    public void callbackCardSplit(CallbackResponse response) {
+    public void callbackCardSplit(CallbackResponse response, HttpHeaders headers,
+                                   UriInfo uriInfo,
+                                   HttpServerRequest request) {
+
+        validarIp(request, headers);
 
         Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
@@ -90,6 +105,22 @@ public class ClientService {
                     throw new RuntimeException("Erro ao buscar produto");
                 });
 
+    }
+
+    public void validarIp(HttpServerRequest request, HttpHeaders headers) {
+
+        String xff = headers.getHeaderString("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            xff = xff.split(",")[0].trim();
+        } else {
+            xff = request.remoteAddress().host();
+        }
+
+        log.infof("Verificando callback do IP: %s", xff);
+
+        if(!ipKey.equals(xff)) {
+            throw new ForbiddenException("IP não autorizado");
+        }
     }
 
 }
