@@ -23,7 +23,7 @@ public class CallbackResource {
                                   @Context HttpHeaders headers,
                                   @Context UriInfo uriInfo,
                                   @Context HttpServerRequest request) {
-        service.callbackCardSplit(callbackResponse);
+        service.callbackCardSplit(callbackResponse, headers, uriInfo, request);
     }
 
 }
