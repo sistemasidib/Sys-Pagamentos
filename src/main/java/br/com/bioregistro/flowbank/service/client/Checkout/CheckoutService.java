@@ -4,10 +4,7 @@ import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentComp
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentProvider;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.ProdutoExterno;
-import br.com.bio.registro.core.runtime.entities.idecan.dbo.Candidato;
-import br.com.bio.registro.core.runtime.entities.idecan.dbo.Cargo;
-import br.com.bio.registro.core.runtime.entities.idecan.dbo.Edital;
-import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
+import br.com.bio.registro.core.runtime.entities.idecan.dbo.*;
 import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.enuns.TaxType;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PessoaReq;
@@ -65,9 +62,11 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
 
         Cargo cargo = inscricao.localidade.cargo;
 
+        Localidade localidade = inscricao.localidade;
+
         Candidato candidato = inscricao.candidato;
 
-        ProdutoExterno prod = save(cargo, alias);
+        ProdutoExterno prod = save(localidade, alias);
 
         RedirectURLResp url = checkoutClient.gerarOrdemPagamentoURI(prod.externalProdutoId);
 
@@ -79,21 +78,22 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Transactional
-    public ProdutoExterno save(Cargo cargo, String alias) {
+    public ProdutoExterno save(Localidade localidade, String alias) {
 
-        Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", cargo.carId, alias).firstResultOptional();
+
+        Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", localidade.cargo.carId, alias).firstResultOptional();
 
 
         return prodct.orElseGet(() -> {
             ProductResp resp = checkoutClient.criarProduto(
-                    new ProductReq(cargo.carDescricao, cargo.carDescricao, cargo.carVlInscricao, BigDecimal.valueOf(1), TaxType.FIXED.getDescription())
+                    new ProductReq(localidade.cargo.carDescricao, localidade.cargo.carDescricao, localidade.cargo.carVlInscricao, BigDecimal.valueOf(1), TaxType.FIXED.getDescription())
             );
 
             System.out.println("estou entrando aqui e não paro");
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
 
-            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), cargo.carId.toString(), cargo.carVlInscricao);
+            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), localidade.locId.toString(), localidade.cargo.carVlInscricao);
 
             prod.persistAndFlush();
 
