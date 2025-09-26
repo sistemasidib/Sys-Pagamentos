@@ -4,7 +4,9 @@ import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentProv
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentTransaction;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.ProdutoExterno;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.enuns.PaymentTransactionType;
+import br.com.bio.registro.core.runtime.entities.idecan.dbo.Cargo;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
+import br.com.bio.registro.core.runtime.entities.idecan.dbo.Localidade;
 import br.com.bioregistro.flowbank.model.ClientResquestPIX;
 import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.service.PixService;
@@ -27,6 +29,8 @@ import org.jboss.logging.Logger;
 
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,31 +77,21 @@ public class ClientService {
         paymentTransaction.persist();
     }
 
-    @Transactional
+
     public void callbackCardSplit(CallbackResponse response, HttpHeaders headers,
                                    UriInfo uriInfo,
                                    HttpServerRequest request) {
 
-        validarIp(request, headers);
+      //  validarIp(request, headers);
 
         Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
         prod.ifPresentOrElse(
                 it -> {
-                    Optional<PaymentTransaction> transactionOpt =
-                            PaymentTransaction.find("externalId = ?1", response.transactionId())
-                                    .firstResultOptional();
+                    PaymentTransaction transaction =  salvarTransacao(response, it);
 
-                    PaymentTransaction transaction = transactionOpt.orElse(new PaymentTransaction());
 
-                    transaction.externalId = response.transactionId();
-                    transaction.product = it;
-                    transaction.currency = response.currency();
-                    transaction.amount = response.amount();
-                    transaction.status = response.status();
-                    transaction.paymentMethod = response.paymentMethod();
-                    transaction.clientReferenceId = response.customerDocument();
-                    transaction.persist();
+                    AtualizarDadosIdecan(response,transaction,it.clientIdReference);
 
                 },
                 () -> {
@@ -105,6 +99,67 @@ public class ClientService {
                 });
 
     }
+
+
+    @Transactional
+    public PaymentTransaction salvarTransacao(CallbackResponse response, ProdutoExterno product){
+
+        Optional<PaymentTransaction> transactionOpt =
+                PaymentTransaction.find("externalId = ?1", response.transactionId())
+                        .firstResultOptional();
+
+        PaymentTransaction transaction = transactionOpt.orElse(new PaymentTransaction());
+
+
+        transaction.externalId = response.transactionId();
+        transaction.product = product;
+        transaction.currency = response.currency();
+        transaction.amount = response.amount();
+        transaction.status = response.status();
+        transaction.paymentMethod = response.paymentMethod();
+        transaction.clientReferenceId = response.customerDocument();
+        transaction.createdAt = response.timestamp();
+        transaction.persist();
+
+        return transaction;
+    }
+
+
+    @Transactional
+    public void AtualizarDadosIdecan(CallbackResponse response, PaymentTransaction transaction, String localidadeId) {
+
+        Inscricao inscricao = Inscricao.find(
+                "candidato.canCPF = ?1  and localidade.locId = ?2",
+                response.customerDocument(),transaction.product.clientIdReference
+        ).firstResult();
+
+
+
+        //pra trazer só uma, tenho que ver nesse transaction se a inscricao ta nele, pq vai trazer mais de uma ctz
+
+
+
+        switch (response.status()) {
+            case "transaction.approved":
+                inscricao.insDtPagamento =  response.timestamp();
+                break;
+            case "transaction.chargeback":
+                if(inscricao.insDtPagamento != null)
+                    inscricao.insDtPagamento = null;
+                break;
+
+            case "transaction.refunded":
+
+                if(inscricao.insDtPagamento != null)
+                    inscricao.insDtPagamento = null;
+                break;
+                default:
+                    throw new BadRequestException("Erro ao realizar transacao");
+
+        }
+        }
+
+
 
     public void validarIp(HttpServerRequest request, HttpHeaders headers) {
 

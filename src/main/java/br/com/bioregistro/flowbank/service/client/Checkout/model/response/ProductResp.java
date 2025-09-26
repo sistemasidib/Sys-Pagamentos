@@ -3,6 +3,7 @@ package br.com.bioregistro.flowbank.service.client.Checkout.model.response;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentCompany;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.PaymentProvider;
 import br.com.bio.registro.core.runtime.entities.bioregistro.payment.ProdutoExterno;
+import br.com.bio.registro.core.runtime.entities.idecan.dbo.Localidade;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.MetaDataDTO;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.Tenant;
 
@@ -36,6 +37,7 @@ public record ProductResp(
         entity.company = company;
         entity.amount = originalPrice;
         entity.provider = PaymentProvider.findById(1);
+
         return entity;
     }
 
