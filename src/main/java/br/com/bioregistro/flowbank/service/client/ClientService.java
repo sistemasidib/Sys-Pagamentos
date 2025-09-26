@@ -16,6 +16,7 @@ import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank
 import io.vertx.core.http.HttpServerRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Context;
 import br.com.bioregistro.flowbank.model.*;
@@ -83,8 +84,6 @@ public class ClientService {
 
         prod.ifPresentOrElse(
                 it -> {
-                    System.out.println("estou entrando aqui e não paro");
-
                     Optional<PaymentTransaction> transactionOpt =
                             PaymentTransaction.find("externalId = ?1", response.transactionId())
                                     .firstResultOptional();
@@ -102,7 +101,7 @@ public class ClientService {
 
                 },
                 () -> {
-                    throw new RuntimeException("Erro ao buscar produto");
+                    throw new BadRequestException("Erro ao buscar produto");
                 });
 
     }

@@ -41,15 +41,6 @@ public class IncomingRequestLogger implements ContainerRequestFilter {
                 requestContext.setEntityStream(newStream);
             }
 
-            // IP do cliente
-            String clientIp = requestContext.getHeaderString("X-Forwarded-For");
-            if (clientIp != null && !clientIp.isBlank()) {
-                clientIp = clientIp.split(",")[0].trim();
-            } else {
-                HttpServerRequest vertxRequest = (HttpServerRequest) requestContext.getProperty("vertx-request");
-                clientIp = vertxRequest != null ? vertxRequest.remoteAddress().host() : "unknown";
-            }
-
             log.infof("Incoming request: %s %s", requestContext.getMethod(), requestContext.getUriInfo().getPath()); log.info("Headers:"); requestContext.getHeaders().forEach((k, v) -> log.infof("- %s: %s", k, v)); log.infof("Body: %s", body);
 
             // Cria ApiEvent
@@ -58,7 +49,6 @@ public class IncomingRequestLogger implements ContainerRequestFilter {
             event.httpMethod = requestContext.getMethod();
             event.headers = mapper.writeValueAsString(requestContext.getHeaders());
             event.body = body != null ? body : "";
-            event.clientIp = clientIp;
             event.responseStatus = null; // pendente
             event.persist();
 
