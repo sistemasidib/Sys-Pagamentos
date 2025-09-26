@@ -1,11 +1,12 @@
 package br.com.bioregistro.flowbank.service.client.bradesco;
 
+import br.com.bio.registro.core.runtime.entities.idecan.dbo.ConcursoBancoLogin;
 import br.com.bio.registro.core.runtime.entities.idecan.dbo.Inscricao;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoRequest;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
 import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.model.TypeOperation;
-import br.com.bioregistro.flowbank.model.enuns.TypeOperation;
+import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.PixService;
 import br.com.bioregistro.flowbank.service.client.strategy.interfaces.ClientBank;
 import io.vertx.core.http.HttpServerRequest;
@@ -79,6 +80,16 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
 
     @Override
     public BoletoBradescoResponse processOperationBaixa(String clientCredencial, TypeOperation operation, HttpServerRequest serverRequest, Function<PixForm, Integer> mapper) throws URISyntaxException {
+        return null;
+    }
+
+    @Override
+    public void baixaBoleto(HttpServerRequest serverRequest, Function<PixForm, Integer> mapper, Long editalId, ConcursoBancoLogin concursoBancoLogin) {
+
+    }
+
+    @Override
+    public ConcursoBancoLogin getCredencials(Integer bancoId) {
         return null;
     }
 

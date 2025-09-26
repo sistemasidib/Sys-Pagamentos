@@ -84,6 +84,10 @@
             <artifactId>bio-registro-core</artifactId>
             <version>${bio.registro.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-scheduler</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -24,20 +24,20 @@ public class ClientService {
         this.pixService = pixService;
     }
 
-    public ClientBankResponse gerarLancamentoPrevistoPix(ClientResquestPIX clientResquestPIX, HttpServerRequest serverRequest) throws URISyntaxException {
-
-        Inscricao cand = Inscricao.<Inscricao>find("insId = ?1", clientResquestPIX.inscricao())
-                .firstResultOptional()
-                .orElseThrow(() -> new RuntimeException("Erro ao buscar Inscricao"));
-
-
-        return clientStrategyFactory.executePixOp(clientResquestPIX,cand, clientResquestPIX.operation(), serverRequest, teste -> pixService.createPix(teste));
-    };
-
-    public void aplicarBaixaPagamentoBoleto() {
-        br.com.bioregistro.flowbank.model.enuns.TypeClient.values().forEach(typeClient -> {
-            clientStrategyFactory.getStrategy(typeClient).aplicarBaixaPagamentoBoleto();
-        });
-    }
+//    public ClientBankResponse gerarLancamentoPrevistoPix(ClientResquestPIX clientResquestPIX, HttpServerRequest serverRequest) throws URISyntaxException {
+//
+//        Inscricao cand = Inscricao.<Inscricao>find("insId = ?1", clientResquestPIX.inscricao())
+//                .firstResultOptional()
+//                .orElseThrow(() -> new RuntimeException("Erro ao buscar Inscricao"));
+//
+//
+//        return clientStrategyFactory.executePixOp(clientResquestPIX,cand, clientResquestPIX.operation(), serverRequest, teste -> pixService.createPix(teste));
+//    };
+//
+//    public void aplicarBaixaPagamentoBoleto() {
+//        br.com.bioregistro.flowbank.model.enuns.TypeClient.values().forEach(typeClient -> {
+//            clientStrategyFactory.getStrategy(typeClient).aplicarBaixaPagamentoBoleto();
+//        });
+//    }
 
 }

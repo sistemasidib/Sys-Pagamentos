@@ -14,4 +14,6 @@ import lombok.*;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BoletoBancoBrasilResponse implements ClientBankResponse {
+
+
 }
