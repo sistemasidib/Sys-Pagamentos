@@ -82,7 +82,7 @@ public class ClientService {
                                    UriInfo uriInfo,
                                    HttpServerRequest request) {
 
-      //  validarIp(request, headers);
+        validarIp(request, headers);
 
         Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
