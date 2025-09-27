@@ -2,6 +2,7 @@ package br.com.bioregistro.flowbank.service.client.Checkout.model.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record CallbackResponse(
         String event,
@@ -12,6 +13,6 @@ public record CallbackResponse(
         String status,
         String paymentMethod,
         String customerDocument,
-        LocalDateTime timestamp
+        OffsetDateTime timestamp
 ) {
 }

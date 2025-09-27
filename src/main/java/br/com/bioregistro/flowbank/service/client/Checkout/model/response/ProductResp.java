@@ -8,7 +8,10 @@ import br.com.bioregistro.flowbank.service.client.Checkout.model.response.MetaDa
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.Tenant;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 public record ProductResp(
@@ -32,7 +35,7 @@ public record ProductResp(
     public ProdutoExterno toEntity(PaymentCompany company, String clientProduct, BigDecimal originalPrice) {
         ProdutoExterno entity = new ProdutoExterno();
         entity.externalProdutoId = id.toString();
-        entity.createdAt = createdAt.toLocalDateTime();
+        entity.createdAt = createdAt.atZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
         entity.clientIdReference = clientProduct;
         entity.company = company;
         entity.amount = originalPrice;

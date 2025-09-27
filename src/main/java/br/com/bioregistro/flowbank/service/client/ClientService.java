@@ -29,6 +29,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,7 @@ public class ClientService {
         transaction.status = response.status();
         transaction.paymentMethod = response.paymentMethod();
         transaction.clientReferenceId = response.customerDocument();
-        transaction.createdAt = response.timestamp();
+        transaction.createdAt = response.timestamp().atZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
         transaction.persist();
 
         return transaction;
@@ -141,7 +142,7 @@ public class ClientService {
 
         switch (response.status()) {
             case "transaction.approved":
-                inscricao.insDtPagamento =  response.timestamp();
+                inscricao.insDtPagamento = response.timestamp().atZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
                 break;
             case "transaction.chargeback":
                 if(inscricao.insDtPagamento != null)
