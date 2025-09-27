@@ -27,7 +27,6 @@ public class IncomingRequestLogger implements ContainerRequestFilter {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    @Transactional
     public void filter(ContainerRequestContext requestContext) {
         try {
             // Lê o corpo

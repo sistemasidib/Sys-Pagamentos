@@ -21,17 +21,9 @@ public class OutgoingResponseLogger implements ClientResponseFilter {
     private static final Logger log = Logger.getLogger(OutgoingResponseLogger.class);
 
     @Override
-    @Transactional
     public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) {
         try {
-            // Pega o UUID do evento que foi salvo no request
-            String eventId = (String) requestContext.getProperty("apiEventId");
-            if (eventId != null) {
-                ApiEvent event = ApiEvent.findById(Long.valueOf(eventId));
-                if (event != null) {
-                    log.infof("Updated ApiEvent ID %s with response status %d", eventId, responseContext.getStatus());
-                }
-            }
+            log.infof("response status %d", responseContext.getStatus());
         } catch (Exception e) {
             log.error("Erro ao atualizar ApiEvent com status da resposta", e);
         }
