@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Provider
-@Priority(Priorities.USER)
 public class IncomingRequestLogger implements ContainerRequestFilter {
 
     private static final Logger log = Logger.getLogger(IncomingRequestLogger.class);

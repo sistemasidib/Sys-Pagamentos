@@ -15,7 +15,6 @@ import jakarta.ws.rs.ext.Provider;
 import org.jboss.logging.Logger;
 
 @Provider
-@Priority(Priorities.USER)
 public class OutgoingResponseLogger implements ClientResponseFilter {
 
     private static final Logger log = Logger.getLogger(OutgoingResponseLogger.class);
