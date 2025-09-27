@@ -43,20 +43,6 @@ public class IncomingRequestLogger implements ContainerRequestFilter {
 
             log.infof("Incoming request: %s %s", requestContext.getMethod(), requestContext.getUriInfo().getPath()); log.info("Headers:"); requestContext.getHeaders().forEach((k, v) -> log.infof("- %s: %s", k, v)); log.infof("Body: %s", body);
 
-            // Cria ApiEvent
-            ApiEvent event = new ApiEvent();
-            event.endpoint = requestContext.getUriInfo().getPath();
-            event.httpMethod = requestContext.getMethod();
-            event.headers = mapper.writeValueAsString(requestContext.getHeaders());
-            event.body = body != null ? body : "";
-            event.responseStatus = null; // pendente
-            event.persist();
-
-            // Guarda o UUID no contexto para usar depois
-            requestContext.setProperty("apiEventId", event.id.toString());
-
-            log.infof("Request logged with ID: %s", event.id);
-
         } catch (Exception e) {
             log.error("Erro ao registrar requisição", e);
         }

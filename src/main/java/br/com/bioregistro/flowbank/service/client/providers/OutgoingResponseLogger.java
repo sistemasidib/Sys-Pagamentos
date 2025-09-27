@@ -29,11 +29,6 @@ public class OutgoingResponseLogger implements ClientResponseFilter {
             if (eventId != null) {
                 ApiEvent event = ApiEvent.findById(Long.valueOf(eventId));
                 if (event != null) {
-                    HttpServerRequest vertxRequest = (HttpServerRequest) requestContext.getProperty("vertx-request");
-                    String clientIp = vertxRequest != null ? vertxRequest.remoteAddress().host() : "unknown";
-                    event.clientIp = vertxRequest.remoteAddress().host();
-                    event.responseStatus = responseContext.getStatus(); // HTTP status da resposta
-                    event.persist();
                     log.infof("Updated ApiEvent ID %s with response status %d", eventId, responseContext.getStatus());
                 }
             }
