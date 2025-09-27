@@ -80,7 +80,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     @Transactional
     public ProdutoExterno save(Localidade localidade, String alias) {
 
-        Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", localidade.cargo.carId, alias).firstResultOptional();
+        Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", localidade.locId, alias).firstResultOptional();
 
         return prodct.orElseGet(() -> {
             ProductResp resp = checkoutClient.criarProduto(
