@@ -81,10 +81,10 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     public ProdutoExterno save(Localidade localidade, String alias) {
 
         Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", localidade.locId, alias).firstResultOptional();
-
+        //TODO AJUSTAR PARA TAXA SER AUTOMATICA E DE FORMA DINAMICA
         return prodct.orElseGet(() -> {
             ProductResp resp = checkoutClient.criarProduto(
-                    new ProductReq(localidade.cargo.carDescricao, localidade.cargo.carDescricao, localidade.cargo.carVlInscricao, BigDecimal.valueOf(1), TaxType.FIXED.getDescription())
+                    new ProductReq(localidade.cargo.carDescricao, localidade.cargo.carDescricao, localidade.cargo.carVlInscricao, BigDecimal.valueOf(12), TaxType.PERCENTAGE.getDescription())
             );
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
