@@ -91,7 +91,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
 
             ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), localidade.locId.toString(), localidade.cargo.carVlInscricao);
 
-            prod.persistAndFlush();
+            prod.persist();
 
             return prod;
         });
