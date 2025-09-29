@@ -141,7 +141,7 @@ public class ClientService {
 
         //pra trazer só uma, tenho que ver nesse transaction se a inscricao ta nele, pq vai trazer mais de uma ctz
 
-        switch (response.status()) {
+        switch (response.event()) {
             case "payment.approved":
             case "payment.completed":
                 inscricao.insDtPagamento = response.timestamp()
