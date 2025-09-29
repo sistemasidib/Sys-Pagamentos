@@ -11,6 +11,7 @@ public class BadRequestExceptionMapper implements ExceptionMapper<BadRequestExce
 
     @Override
     public Response toResponse(BadRequestException e) {
+        e.printStackTrace();
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(MsgRetorno.builder()
                         .success(false)
