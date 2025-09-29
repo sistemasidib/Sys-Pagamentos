@@ -134,31 +134,29 @@ public class ClientService {
                 response.customerDocument(),transaction.product.clientIdReference
         ).firstResult();
 
-
-
         //pra trazer só uma, tenho que ver nesse transaction se a inscricao ta nele, pq vai trazer mais de uma ctz
 
-
-
         switch (response.status()) {
-            case "transaction.approved":
-                inscricao.insDtPagamento = response.timestamp().atZoneSameInstant(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
+            case "payment.approved":
+            case "payment.completed":
+                inscricao.insDtPagamento = response.timestamp()
+                        .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
+                        .toLocalDateTime();
                 break;
+
             case "transaction.chargeback":
-                if(inscricao.insDtPagamento != null)
-                    inscricao.insDtPagamento = null;
-                break;
-
             case "transaction.refunded":
-
-                if(inscricao.insDtPagamento != null)
+                if (inscricao.insDtPagamento != null) {
                     inscricao.insDtPagamento = null;
+                }
                 break;
-                default:
-                    throw new BadRequestException("Erro ao realizar transacao");
 
+            default:
+                throw new BadRequestException("Erro ao realizar transacao");
         }
-        }
+
+        inscricao.persist();
+    }
 
 
 
