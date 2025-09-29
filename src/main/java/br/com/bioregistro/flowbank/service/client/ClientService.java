@@ -30,10 +30,7 @@ import org.jboss.logging.Logger;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @ApplicationScoped
 public class ClientService {
@@ -44,6 +41,14 @@ public class ClientService {
 
     @ConfigProperty(name = "app.security.api-ip")
     private String ipKey;
+
+    @ConfigProperty(name = "app.security.api-X-Tenant-ID")
+    private String apiXTenantID;
+
+    @ConfigProperty(name = "app.security.api-X-Webhook-Signature")
+    private String apiXWebhookSignature;
+
+
 
     private static final Logger log = Logger.getLogger(ClientService.class);
 
@@ -83,7 +88,7 @@ public class ClientService {
                                    UriInfo uriInfo,
                                    HttpServerRequest request) {
 
-        validarIp(request, headers);
+        validateSignuture(request, headers);
 
         Optional<ProdutoExterno> prod = ProdutoExterno.find("externalProdutoId = ?1", response.productId()).firstResultOptional();
 
@@ -174,6 +179,18 @@ public class ClientService {
         if(!ipKey.equals(xff)) {
             throw new ForbiddenException("IP não autorizado");
         }
+    }
+
+    public void validateSignuture(HttpServerRequest request, HttpHeaders headers) {
+        String xTenantID = headers.getHeaderString("X-Tenant-ID");
+        String xWebhooksignature = headers.getHeaderString("X-Webhook-Signature");
+
+        log.infof("Verificando assinatura do hook: %s e id: %s", xWebhooksignature, xTenantID);
+
+        if (!Objects.equals(xTenantID, apiXTenantID) || !Objects.equals(xWebhooksignature, apiXWebhookSignature)) {
+            throw new ForbiddenException("Assinatura ou ID do tenant inválidos");
+        }
+
     }
 
 }
