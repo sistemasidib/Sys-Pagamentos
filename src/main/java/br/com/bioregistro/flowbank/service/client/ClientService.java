@@ -149,8 +149,8 @@ public class ClientService {
                         .toLocalDateTime();
                 break;
 
-            case "transaction.chargeback":
-            case "transaction.refunded":
+            case "payment.chargeback":
+            case "payment.refunded":
                 if (inscricao.insDtPagamento != null) {
                     inscricao.insDtPagamento = null;
                 }
