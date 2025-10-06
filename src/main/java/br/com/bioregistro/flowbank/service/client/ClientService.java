@@ -11,6 +11,7 @@ import br.com.bioregistro.flowbank.model.ClientResquestPIX;
 import br.com.bioregistro.flowbank.model.PixForm;
 import br.com.bioregistro.flowbank.service.PixService;
 import br.com.bioregistro.flowbank.service.client.Checkout.CheckoutService;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.enuns.PaymentStatus;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.CallbackResponse;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.ProductResp;
 import br.com.bioregistro.flowbank.service.client.strategy.ClientStrategyFactory;
@@ -139,25 +140,14 @@ public class ClientService {
                 response.customerDocument(),transaction.product.clientIdReference
         ).firstResult();
 
-        //pra trazer só uma, tenho que ver nesse transaction se a inscricao ta nele, pq vai trazer mais de uma ctz
+        PaymentStatus paymentStatus = PaymentStatus.from(response.status()).orElseThrow(() -> new BadRequestException("Status inválido: " + response.status()));
 
-        switch (response.event()) {
-            case "payment.approved":
-            case "payment.completed":
-                inscricao.insDtPagamento = response.timestamp()
-                        .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
-                        .toLocalDateTime();
-                break;
-
-            case "payment.chargeback":
-            case "payment.refunded":
-                if (inscricao.insDtPagamento != null) {
-                    inscricao.insDtPagamento = null;
-                }
-                break;
-
-            default:
-                throw new BadRequestException("Erro ao realizar transacao");
+        if (paymentStatus.isApproved()) {
+            inscricao.insDtPagamento = response.timestamp()
+                    .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
+                    .toLocalDateTime();
+        } else if (paymentStatus.isRefunded()) {
+            inscricao.insDtPagamento = null;
         }
 
         inscricao.persist();
