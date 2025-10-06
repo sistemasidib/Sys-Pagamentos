@@ -97,7 +97,6 @@ public class ClientService {
                 it -> {
                     PaymentTransaction transaction =  salvarTransacao(response, it);
 
-
                     AtualizarDadosIdecan(response,transaction,it.clientIdReference);
 
                 },
@@ -116,7 +115,6 @@ public class ClientService {
                         .firstResultOptional();
 
         PaymentTransaction transaction = transactionOpt.orElse(new PaymentTransaction());
-
 
         transaction.externalId = response.transactionId();
         transaction.product = product;

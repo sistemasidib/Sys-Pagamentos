@@ -5,18 +5,17 @@ import jakarta.ws.rs.BadRequestException;
 import java.util.Arrays;
 import java.util.Optional;
 
-public enum PaymentStatus {
+public enum EventStatus {
 
     APPROVED("approved"),
     COMPLETED("completed"),
     CHARGEBACK("chargeback"),
     REFUNDED("refunded"),
-    DECLINED("declined"),
-    CANCELLED("cancelled");
+    DECLINED("declined");
 
     private final String value;
 
-    PaymentStatus(String value) {
+    EventStatus(String value) {
         this.value = value;
     }
 
@@ -24,8 +23,7 @@ public enum PaymentStatus {
         return value;
     }
 
-
-    public static Optional<PaymentStatus> from(String status) {
+    public static Optional<EventStatus> from(String status) {
         if (status == null || status.isBlank()) throw new BadRequestException("Status de pagamento inválido: vazio ou nulo.");
 
         String cleanStatus = status.toLowerCase().replace("payment.", "");
@@ -36,12 +34,5 @@ public enum PaymentStatus {
     }
 
 
-    public boolean isApproved() {
-        return this == APPROVED || this == COMPLETED;
-    }
-
-
-    public boolean isRefunded() {
-        return this == CHARGEBACK || this == REFUNDED || this == DECLINED || this == CANCELLED;
-    }
 }
+
