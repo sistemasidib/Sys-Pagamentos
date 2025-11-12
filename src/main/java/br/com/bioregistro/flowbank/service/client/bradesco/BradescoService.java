@@ -84,13 +84,13 @@ public class BradescoService implements ClientBank<BoletoBradescoResponse, PixFo
     }
 
     @Override
-    public void baixaBoleto(HttpServerRequest serverRequest, Function<PixForm, Integer> mapper, Long editalId, ConcursoBancoLogin concursoBancoLogin) {
+    public void baixaBoleto(HttpServerRequest request, Integer editalId, ConcursoBancoLogin concursoBancoLogin) {
 
     }
 
     @Override
-    public ConcursoBancoLogin getCredencials(Integer bancoId) {
-        return null;
+    public void baixaBoleto(Long editalId, ConcursoBancoLogin login) {
+
     }
 
 
