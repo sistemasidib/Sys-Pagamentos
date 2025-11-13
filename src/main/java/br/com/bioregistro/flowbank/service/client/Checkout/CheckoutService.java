@@ -58,7 +58,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     @Override
     public String gerarOrdemDepagamentoCartaoSplit(String clientId, String alias) {
 
-        FormOrder form = new FormOrder(clientId, alias);
+        FormOrder form =  FormOrder.from(clientId, alias);
 
         ProdutoExterno prod = save(form, alias);
 
