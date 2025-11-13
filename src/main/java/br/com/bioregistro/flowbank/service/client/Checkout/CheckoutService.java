@@ -8,6 +8,7 @@ import br.com.bio.registro.core.runtime.entities.idecan.dbo.*;
 import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.enuns.TaxType;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PessoaReq;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PriceFee;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.ProductReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.CheckoutResponse;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.response.ProductResp;
@@ -22,6 +23,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -66,7 +69,7 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
 
         Candidato candidato = inscricao.candidato;
 
-        ProdutoExterno prod = save(localidade, alias);
+        ProdutoExterno prod = save(localidade, alias, cargo);
 
         RedirectURLResp url = checkoutClient.gerarOrdemPagamentoURI(prod.externalProdutoId);
 
@@ -78,18 +81,24 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Transactional
-    public ProdutoExterno save(Localidade localidade, String alias) {
+    public ProdutoExterno save(Localidade localidade, String alias, Cargo cargo) {
 
         Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", localidade.locId, alias).firstResultOptional();
         //TODO AJUSTAR PARA TAXA SER AUTOMATICA E DE FORMA DINAMICA
         return prodct.orElseGet(() -> {
-            ProductResp resp = checkoutClient.criarProduto(
-                    new ProductReq(localidade.cargo.carDescricao, localidade.cargo.carDescricao, localidade.cargo.carVlInscricao, BigDecimal.valueOf(12), TaxType.PERCENTAGE.getDescription())
-            );
 
             Optional<PaymentCompany> company = PaymentCompany.find("alias = ?1", alias).firstResultOptional();
+            PaymentCompany comp = company.orElseThrow(() -> new RuntimeException("Company Inválida"));
 
-            ProdutoExterno prod = resp.toEntity(company.orElseThrow(() -> new RuntimeException("Company Inválida")), localidade.locId.toString(), localidade.cargo.carVlInscricao);
+            ProductResp resp = checkoutClient.criarProduto(
+                    new ProductReq(localidade.cargo.carDescricao, localidade.cargo.carVlInscricao, comp.companyId.toString() ,  Map.of(
+                            "edital_id", cargo.edital.ediId.toString(),
+                            "edital_nome", cargo.edital.ediEntidade
+                    ), List.of(new PriceFee(3, TaxType.PERCENTAGE.getDescription(), BigDecimal.valueOf(12)))));
+
+
+
+            ProdutoExterno prod = resp.toEntity(comp, localidade.locId.toString(), localidade.cargo.carVlInscricao);
 
             prod.persist();
 

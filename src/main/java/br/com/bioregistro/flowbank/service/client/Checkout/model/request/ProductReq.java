@@ -1,24 +1,15 @@
 package br.com.bioregistro.flowbank.service.client.Checkout.model.request;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public record ProductReq(
         String name,
-        String description,
-        BigDecimal priceOriginal,
-        BigDecimal taxValue,
-        String taxType,
-        String status,
-        String template_checkout
+        BigDecimal price,
+        String branchId,
+        Map<String, String> metadata,
+        List<PriceFee> priceFees
 ) {
-
-    public ProductReq(String name,
-                      String description,
-                      BigDecimal price,
-                      BigDecimal taxValue,
-                      String taxType
-    ) {
-        this(name, description, price, taxValue, taxType ,"ATIVO", "dom");
-    }
 
 }
