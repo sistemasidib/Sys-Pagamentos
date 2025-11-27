@@ -7,6 +7,7 @@ import br.com.bioregistro.flowbank.form.Boleto.Bradesco.FormOrder;
 import br.com.bioregistro.flowbank.model.PaymentOrderForm;
 import br.com.bioregistro.flowbank.model.TypeOperation;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.enuns.TaxType;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.request.BranchIdReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PessoaReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PriceFee;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.ProductReq;
@@ -72,6 +73,13 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
     }
 
     @Transactional
+    public ProductResp atualizarProdutoComExternalId(String uuid, String branchId) {
+        BranchIdReq request = new BranchIdReq(branchId);
+        return checkoutClient.atualizarExternalIdProduto(uuid, request);
+    }
+
+
+    @Transactional
     public ProdutoExterno save(FormOrder form, String alias) {
 
         Optional<ProdutoExterno> prodct = ProdutoExterno.find("clientIdReference = ?1 and company.alias = ?2", form.localidadeId(), alias).firstResultOptional();
@@ -95,6 +103,8 @@ public class CheckoutService implements ClientBank<CheckoutResponse, Long, Integ
             return prod;
         });
     }
+
+
 
 
 

@@ -3,6 +3,7 @@ package br.com.bioregistro.flowbank.service.client.Checkout;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoRequest;
 import br.com.bioregistro.flowbank.form.Boleto.Bradesco.BoletoBradescoResponse;
 import br.com.bioregistro.flowbank.model.PaymentResponse;
+import br.com.bioregistro.flowbank.service.client.Checkout.model.request.BranchIdReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PaymentSplitRequest;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.PessoaReq;
 import br.com.bioregistro.flowbank.service.client.Checkout.model.request.ProductReq;
@@ -26,6 +27,14 @@ public interface CheckoutClient {
     @POST
     @Path("products/public")
     ProductResp criarProduto(ProductReq request);
+
+    @PATCH
+    @Path("products/public/{uuid}")
+    ProductResp atualizarExternalIdProduto(
+            @PathParam("uuid") String uuid,
+            BranchIdReq request
+    );
+
 
     @POST
     @Path("products/public")

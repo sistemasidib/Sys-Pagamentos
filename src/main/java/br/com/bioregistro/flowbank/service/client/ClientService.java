@@ -85,6 +85,8 @@ public class ClientService {
     }
 
 
+
+
     public void callbackCardSplit(CallbackResponse response, HttpHeaders headers,
                                    UriInfo uriInfo,
                                    HttpServerRequest request) {
@@ -96,9 +98,11 @@ public class ClientService {
         prod.ifPresentOrElse(
                 it -> {
                     PaymentTransaction transaction =  salvarTransacao(response, it);
-
-                    AtualizarDadosIdecan(response,transaction,it.clientIdReference);
-
+                    if(it.company.alias.equals("IDC")) {
+                        AtualizarDadosIdecan(response,transaction,it.clientIdReference);
+                    } else {
+                        AtualizarDadosIdib(response,transaction,it.clientIdReference);
+                    }
                 },
                 () -> {
                     throw new BadRequestException("Erro ao buscar produto");
@@ -134,6 +138,27 @@ public class ClientService {
     public void AtualizarDadosIdecan(CallbackResponse response, PaymentTransaction transaction, String localidadeId) {
 
         Inscricao inscricao = Inscricao.find(
+                "candidato.canCPF = ?1  and localidade.locId = ?2",
+                response.customerDocument(),transaction.product.clientIdReference
+        ).firstResult();
+
+        PaymentStatus paymentStatus = PaymentStatus.from(response.status()).orElseThrow(() -> new BadRequestException("Status inválido: " + response.status()));
+
+        if (paymentStatus.isApproved()) {
+            inscricao.insDtPagamento = response.timestamp()
+                    .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
+                    .toLocalDateTime();
+        } else if (paymentStatus.isRefunded()) {
+            inscricao.insDtPagamento = null;
+        }
+
+        inscricao.persist();
+    }
+
+    @Transactional
+    public void AtualizarDadosIdib(CallbackResponse response, PaymentTransaction transaction, String localidadeId) {
+
+        br.com.bio.registro.core.runtime.entities.idib.dbo.Inscricao inscricao = Inscricao.find(
                 "candidato.canCPF = ?1  and localidade.locId = ?2",
                 response.customerDocument(),transaction.product.clientIdReference
         ).firstResult();
