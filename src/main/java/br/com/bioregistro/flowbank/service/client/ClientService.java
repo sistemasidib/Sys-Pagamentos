@@ -98,11 +98,17 @@ public class ClientService {
         prod.ifPresentOrElse(
                 it -> {
                     PaymentTransaction transaction =  salvarTransacao(response, it);
+
+
+
+
                     if(it.company.alias.equals("IDC")) {
+
                         AtualizarDadosIdecan(response,transaction,it.clientIdReference);
                     } else {
                         AtualizarDadosIdib(response,transaction,it.clientIdReference);
                     }
+
                 },
                 () -> {
                     throw new BadRequestException("Erro ao buscar produto");
@@ -158,7 +164,7 @@ public class ClientService {
     @Transactional
     public void AtualizarDadosIdib(CallbackResponse response, PaymentTransaction transaction, String localidadeId) {
 
-        br.com.bio.registro.core.runtime.entities.idib.dbo.Inscricao inscricao = Inscricao.find(
+        br.com.bio.registro.core.runtime.entities.idib.dbo.Inscricao inscricao = br.com.bio.registro.core.runtime.entities.idib.dbo.Inscricao.find(
                 "candidato.canCPF = ?1  and localidade.locId = ?2",
                 response.customerDocument(),transaction.product.clientIdReference
         ).firstResult();
